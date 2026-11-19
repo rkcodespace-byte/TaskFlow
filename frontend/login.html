@@ -1,0 +1,370 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow | Account</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #090909;
+            color: #ffffff;
+            padding: 20px;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            background: #151515;
+            border: 1px solid #333333;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px #00000099;
+        }
+
+        .logo {
+            color: #ffffff;
+            font-size: 30px;
+            font-weight: bold;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #999999;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding: 5px;
+            background: #202020;
+            border-radius: 9px;
+        }
+
+        .tabs button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 7px;
+            background: transparent;
+            color: #888888;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .tabs button.active {
+            background: #ffffff;
+            color: #000000;
+            font-weight: bold;
+        }
+
+        label {
+            display: block;
+            margin: 16px 0 8px;
+            color: #cccccc;
+            font-size: 13px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #383838;
+            border-radius: 8px;
+            outline: none;
+            background: #222222;
+            color: #ffffff;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        input::placeholder {
+            color: #777777;
+        }
+
+        input:focus {
+            border-color: #aaaaaa;
+            background: #252525;
+        }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #000000;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #cccccc;
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #message {
+            margin-top: 18px;
+            color: #ff7777;
+            font-size: 14px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 28px 22px;
+            }
+
+            .logo {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="auth-card">
+
+        <div class="logo">TaskFlow.</div>
+
+        <p class="subtitle">
+            Welcome back. Sign in to continue.
+        </p>
+
+        <div class="tabs">
+            <button id="login-tab" class="active"
+                    type="button" onclick="showLogin()">
+                Login
+            </button>
+
+            <button id="register-tab"
+                    type="button" onclick="showRegister()">
+                Register
+            </button>
+        </div>
+
+        <!-- LOGIN FORM -->
+
+        <form id="login-form">
+
+            <label>Email</label>
+
+            <input
+                id="login-email"
+                type="email"
+                required
+                placeholder="Enter your email"
+            >
+
+            <label>Password</label>
+
+            <input
+                id="login-password"
+                type="password"
+                required
+                placeholder="Enter your password"
+            >
+
+            <button class="submit-btn" type="submit">
+                Sign In
+            </button>
+
+        </form>
+
+        <!-- REGISTER FORM -->
+
+        <form id="register-form" class="hidden">
+
+            <label>Username</label>
+
+            <input
+                id="register-username"
+                required
+                placeholder="Enter your username"
+            >
+
+            <label>Email</label>
+
+            <input
+                id="register-email"
+                type="email"
+                required
+                placeholder="Enter your email"
+            >
+
+            <label>Password</label>
+
+            <input
+                id="register-password"
+                type="password"
+                minlength="8"
+                required
+                placeholder="At least 8 characters"
+            >
+
+            <button class="submit-btn" type="submit">
+                Create Account
+            </button>
+
+        </form>
+
+        <p id="message"></p>
+
+    </div>
+
+    <script>
+
+        const loginForm = document.getElementById("login-form");
+        const registerForm = document.getElementById("register-form");
+        const message = document.getElementById("message");
+
+        function showLogin() {
+
+            loginForm.classList.remove("hidden");
+            registerForm.classList.add("hidden");
+
+            document.getElementById("login-tab").classList.add("active");
+            document.getElementById("register-tab").classList.remove("active");
+
+            message.textContent = "";
+        }
+
+        function showRegister() {
+
+            registerForm.classList.remove("hidden");
+            loginForm.classList.add("hidden");
+
+            document.getElementById("register-tab").classList.add("active");
+            document.getElementById("login-tab").classList.remove("active");
+
+            message.textContent = "";
+        }
+
+        // LOGIN API
+
+        loginForm.addEventListener("submit", async (event) => {
+
+            event.preventDefault();
+
+            const button = loginForm.querySelector(".submit-btn");
+
+            button.disabled = true;
+            button.textContent = "Signing in...";
+            message.textContent = "";
+
+            try {
+
+                const response = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email: document.getElementById("login-email").value,
+                        password: document.getElementById("login-password").value
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    window.location.href = "/";
+                } else {
+                    message.textContent = result.detail || "Login failed";
+                }
+
+            } catch (error) {
+
+                message.textContent = "Unable to connect. Please try again.";
+
+            } finally {
+
+                button.disabled = false;
+                button.textContent = "Sign In";
+
+            }
+
+        });
+
+        // REGISTER API
+
+        registerForm.addEventListener("submit", async (event) => {
+
+            event.preventDefault();
+
+            const button = registerForm.querySelector(".submit-btn");
+
+            button.disabled = true;
+            button.textContent = "Creating account...";
+            message.textContent = "";
+
+            try {
+
+                const response = await fetch("/api/auth/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        username: document.getElementById("register-username").value,
+                        email: document.getElementById("register-email").value,
+                        password: document.getElementById("register-password").value
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    window.location.href = "/";
+                } else {
+                    message.textContent = result.detail || "Registration failed";
+                }
+
+            } catch (error) {
+
+                message.textContent = "Unable to connect. Please try again.";
+
+            } finally {
+
+                button.disabled = false;
+                button.textContent = "Create Account";
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
